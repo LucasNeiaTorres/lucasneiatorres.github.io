@@ -171,5 +171,5 @@ export const en: Dict = {
     cvNote: "in Portuguese",
   },
 
-  lang: { other: "PT", otherHref: "/", label: "Ler em português" },
+  lang: { other: "PT", otherHref: "/", label: "PT — Ler em português" },
 };

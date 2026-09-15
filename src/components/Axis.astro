@@ -254,12 +254,13 @@ timeline.forEach((ev, i) => {
     display: flex;
     align-items: center;
   }
+  /* Sem opacity: 0,85 sobre --c-mut compunha #83837e e caía para 3,7:1. O
+     rótulo do vão é texto, e texto passa em AA. */
   .gap__lbl {
     font-size: var(--t--1);
     text-transform: uppercase;
     letter-spacing: 0.12em;
     color: var(--c-mut);
-    opacity: 0.85;
   }
 
   .ev__t {
@@ -391,9 +392,11 @@ timeline.forEach((ev, i) => {
       orphans: 2;
       widows: 2;
     }
+    /* Sem break-inside: avoid — com ele um parágrafo que não cabia no resto da
+       coluna pulava inteiro e a primeira coluna terminava no meio. Deixar o
+       texto correr entre colunas é o que equilibra as duas. */
     .ev--f .ev__p {
       max-width: none;
-      break-inside: avoid-column;
     }
     .ev__cols .ev__p + .ev__p {
       margin-top: 0;

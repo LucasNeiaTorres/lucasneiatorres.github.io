@@ -170,5 +170,5 @@ export const pt: Dict = {
     cv: "Currículo em PDF",
   },
 
-  lang: { other: "EN", otherHref: "/en/", label: "Read in English" },
+  lang: { other: "EN", otherHref: "/en/", label: "EN — Read in English" },
 };
