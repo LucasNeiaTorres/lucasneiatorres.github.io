@@ -159,7 +159,7 @@ export const pt: Dict = {
       },
       {
         label: "Prática",
-        items: "SOLID · Clean Code · code review · Git Flow · testes automatizados com pytest",
+        items: "SOLID · Clean Code · code review · Git Flow · testes unitários com JUnit e pytest",
       },
     ],
   },
