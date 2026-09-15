@@ -1,0 +1,106 @@
+---
+import "../styles/global.css";
+import { site } from "../data/site";
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+  lang: "pt" | "en";
+}
+const { t, lang } = Astro.props;
+
+const canonical = new URL(lang === "pt" ? "/" : "/en/", site.origin).href;
+const ogImage = new URL("/og.png", site.origin).href;
+
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: site.name,
+  givenName: "Lucas",
+  familyName: "Néia Torres",
+  jobTitle: lang === "pt" ? "Desenvolvedor back-end" : "Back-end developer",
+  description: t.meta.description,
+  email: `mailto:${site.email}`,
+  url: site.origin,
+  image: ogImage,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: site.locality,
+    addressRegion: site.region,
+    addressCountry: site.country,
+  },
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "Universidade Federal do Paraná" },
+    { "@type": "EducationalOrganization", name: "Instituto Federal do Paraná" },
+  ],
+  worksFor: { "@type": "Organization", name: "FiscalTech" },
+  knowsLanguage: ["pt-BR", "en"],
+  knowsAbout: [
+    "Java",
+    "Spring Boot",
+    "Hibernate",
+    "Python",
+    "FastAPI",
+    "SQLAlchemy",
+    "PostgreSQL",
+    "Oracle Database",
+    "REST APIs",
+    "Docker",
+  ],
+  sameAs: [site.github, site.linkedin],
+};
+---
+
+<!doctype html>
+<html lang={t.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="pt-BR" href={new URL("/", site.origin).href} />
+    <link rel="alternate" hreflang="en" href={new URL("/en/", site.origin).href} />
+    <link rel="alternate" hreflang="x-default" href={new URL("/", site.origin).href} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link
+      rel="preload"
+      href="/fonts/instrument-serif-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/ibm-plex-sans-latin.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={t.meta.title} />
+    <meta property="og:description" content={t.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === "pt" ? "pt_BR" : "en_US"} />
+    <meta property="og:locale:alternate" content={lang === "pt" ? "en_US" : "pt_BR"} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.meta.title} />
+    <meta name="twitter:description" content={t.meta.description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <meta name="author" content={site.name} />
+    <meta name="theme-color" content="#fcfcfa" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
+  </head>
+
+  <body>
+    <a class="skip" href="#main">{t.nav.skip}</a>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,76 @@
+---
+import { site } from "../data/site";
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+---
+
+<header class="mast">
+  <div class="wrap mast__in">
+    <p class="mast__name">{site.name}</p>
+    <nav class="mast__nav" aria-label={t.axis.heading}>
+      <a href="#percurso">{t.nav.path}</a>
+      <a href="#stack">{t.nav.stack}</a>
+      <a href="#contato">{t.nav.contact}</a>
+    </nav>
+    <a class="mast__lang" href={t.lang.otherHref} hreflang={t.lang.other.toLowerCase()} lang={t.lang.other.toLowerCase()} aria-label={t.lang.label}>
+      {t.lang.other}
+    </a>
+  </div>
+</header>
+
+<style>
+  .mast {
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .mast__in {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--s-2) var(--s-3);
+    padding-block: var(--s-2);
+  }
+  .mast__name {
+    font-size: var(--t--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-right: auto;
+  }
+  .mast__nav {
+    display: flex;
+    gap: var(--s-3);
+  }
+  .mast__nav a,
+  .mast__lang {
+    font-size: var(--t--1);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--c-mut);
+    text-decoration: none;
+  }
+  .mast__nav a:hover,
+  .mast__lang:hover {
+    color: var(--c-ink);
+  }
+  /* O alternador de idioma é o único item com a marca do acento: é uma troca
+     de estado da página, não uma navegação dentro dela. */
+  .mast__lang {
+    color: var(--c-acc);
+    border-bottom: 1px solid currentColor;
+    padding-bottom: 1px;
+  }
+  .mast__lang:hover {
+    color: var(--c-acc-deep);
+  }
+
+  @media (max-width: 30rem) {
+    .mast__name {
+      flex-basis: 100%;
+    }
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import Base from "../../layouts/Base.astro";
+import Masthead from "../../components/Masthead.astro";
+import Opening from "../../components/Opening.astro";
+import Axis from "../../components/Axis.astro";
+import More from "../../components/More.astro";
+import Stack from "../../components/Stack.astro";
+import Contact from "../../components/Contact.astro";
+import { en } from "../../data/en";
+---
+
+<Base t={en} lang="en">
+  <Masthead t={en} />
+  <main id="main">
+    <Opening t={en} />
+    <Axis t={en} />
+    <More t={en} />
+    <Stack t={en} />
+    <Contact t={en} />
+  </main>
+</Base>

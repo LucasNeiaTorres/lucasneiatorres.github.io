@@ -1,0 +1,64 @@
+/* ==========================================================================
+   Tokens — direção "série temporal".
+   A página é um eixo do tempo: o vão entre dois eventos é o tempo decorrido.
+   Paleta clara e única, por decisão: uma série plotada se lê no claro.
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* --- cor ---------------------------------------------------------------
+     Neutros com viés levemente quente/verde, puxados para o acento — não
+     cinza puro. O acento é a cor de um traço plotado e só aparece no eixo,
+     nos marcadores e em link. Nunca em fundo de bloco.                      */
+  --c-bg:        #fcfcfa;
+  --c-bg-sunk:   #f5f5f1;   /* recuo para os blocos fora do eixo            */
+  --c-ink:       #111111;   /* 18.6:1 sobre --c-bg                          */
+  --c-mut:       #6e6e68;   /*  4.99:1 sobre --c-bg — AA em texto normal    */
+  --c-axis:      #dde0dc;
+  --c-rule:      #e6e7e3;
+  --c-acc:       #0e6e55;   /*  6.05:1 sobre --c-bg — AA                    */
+  --c-acc-deep:  #0a5541;   /* hover, e texto do acento sobre --c-bg-sunk   */
+  --c-sel:       #cfe9df;
+
+  /* --- tipografia --------------------------------------------------------
+     Instrument Serif nos anos e no título: contraste altíssimo, algarismos
+     que parecem gravados — são marcas de escala, têm de parecer gravadas.
+     IBM Plex Sans em todo o resto: humanista, nivelada, não disputa.        */
+  --f-display: "Instrument Serif", "Times New Roman", Georgia, serif;
+  --f-text: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* escala fluida — razão ~1.22 no mínimo, ~1.31 no máximo */
+  --t--1: clamp(0.78rem, 0.76rem + 0.11vw, 0.84rem);
+  --t-0:  clamp(1rem,    0.97rem + 0.15vw, 1.08rem);
+  --t-1:  clamp(1.16rem, 1.11rem + 0.26vw, 1.32rem);
+  --t-2:  clamp(1.35rem, 1.25rem + 0.5vw,  1.66rem);
+  --t-3:  clamp(1.9rem,  1.5rem + 2vw,     3.1rem);
+  --t-4:  clamp(2.3rem,  1.5rem + 4.1vw,   5.2rem);
+
+  --lh-tight: 0.98;
+  --lh-head: 1.16;
+  --lh-body: 1.62;
+  --measure: 60ch;
+
+  /* --- eixo --------------------------------------------------------------
+     --axis-col posiciona o eixo a ~22% da largura: assimétrico por decisão,
+     nunca centrado. --mes é quanto vale UM MÊS de vão — é o que torna o
+     espaçamento da página um dado, e não gosto.                             */
+  --axis-col: clamp(3.6rem, 18vw, 9.5rem);
+  --axis-gap: clamp(1rem, 2.6vw, 2.2rem);
+  --mes: clamp(0.2rem, 0.42vw, 0.42rem);
+  --vao-min: 2rem;
+  --vao-max: 11rem;
+
+  /* --- espaço ------------------------------------------------------------ */
+  --s-1: 0.5rem;
+  --s-2: 0.9rem;
+  --s-3: 1.5rem;
+  --s-4: 2.4rem;
+  --s-5: clamp(3rem, 7vw, 6rem);
+  --s-6: clamp(4.5rem, 11vw, 10rem);
+
+  --gutter: clamp(1rem, 5vw, 4.5rem);
+  --wrap: 68rem;
+}

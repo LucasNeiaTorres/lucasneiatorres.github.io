@@ -1,0 +1,116 @@
+---
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+---
+
+<section id="stack" class="st" aria-labelledby="st-h">
+  <div class="wrap">
+    <div class="st__head">
+      <h2 id="st-h" class="st__h">{t.stack.heading}</h2>
+      <p class="st__lead">{t.stack.lead}</p>
+    </div>
+
+    <dl class="st__list">
+      {
+        t.stack.groups.map((g, i) => (
+          <div class:list={["st__g", i === 0 && "st__g--lead"]}>
+            <dt class="st__lbl">{g.label}</dt>
+            <dd class="st__dd">
+              {g.lead && <p class="st__note">{g.lead}</p>}
+              <p class="st__items">{g.items}</p>
+            </dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  /* Fora do eixo, e de propósito mais apertada que o percurso: a alternância
+     de densidade é o ritmo da página. Aqui não há tempo, então não há eixo. */
+  .st {
+    border-top: 1px solid var(--c-rule);
+    padding-block: var(--s-5);
+  }
+  .st__head {
+    padding-left: calc(var(--axis-col) + var(--axis-gap));
+    margin-bottom: var(--s-4);
+  }
+  .st__h {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: var(--t-2);
+    letter-spacing: 0.01em;
+  }
+  .st__lead {
+    color: var(--c-mut);
+    font-size: var(--t--1);
+    max-width: 56ch;
+    margin-top: var(--s-1);
+    line-height: 1.5;
+  }
+  .st__list {
+    margin: 0;
+  }
+  .st__g {
+    display: grid;
+    grid-template-columns: var(--axis-col) minmax(0, 1fr);
+    column-gap: var(--axis-gap);
+    padding-block: var(--s-2);
+    border-top: 1px solid var(--c-rule);
+  }
+  .st__g:last-child {
+    border-bottom: 1px solid var(--c-rule);
+  }
+  .st__lbl {
+    font-size: var(--t--1);
+    text-transform: uppercase;
+    letter-spacing: 0.13em;
+    font-weight: 600;
+    color: var(--c-mut);
+    text-align: right;
+    padding-top: 0.35em;
+  }
+  .st__dd {
+    margin: 0;
+    min-width: 0;
+  }
+  .st__note {
+    font-size: var(--t--1);
+    color: var(--c-mut);
+    margin-bottom: 0.15rem;
+  }
+  .st__items {
+    max-width: 66ch;
+    line-height: 1.55;
+  }
+  /* O back-end não ganha nota nem barra: ganha corpo de texto maior e a
+     etiqueta na cor da tinta. É onde o peso está, e o peso é tipográfico. */
+  .st__g--lead .st__lbl {
+    color: var(--c-ink);
+  }
+  .st__g--lead .st__items {
+    font-size: var(--t-1);
+    line-height: 1.45;
+    max-width: 48ch;
+  }
+
+  @media (max-width: 46rem) {
+    .st__head {
+      padding-left: 0;
+    }
+    .st__g {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 0.2rem;
+    }
+    .st__lbl {
+      text-align: left;
+      padding-top: 0;
+    }
+  }
+</style>

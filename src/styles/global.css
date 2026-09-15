@@ -1,0 +1,142 @@
+@import "./tokens.css";
+
+/* --- fontes auto-hospedadas; nenhum pedido a terceiro ---------------------- */
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+    U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/ibm-plex-sans-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304,
+    U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0,
+    U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* --- base ----------------------------------------------------------------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-ink);
+  font-family: var(--f-text);
+  font-size: var(--t-0);
+  line-height: var(--lh-body);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--c-sel); color: var(--c-ink); }
+
+h1, h2, h3, h4 { margin: 0; font-weight: 600; line-height: var(--lh-head); text-wrap: balance; }
+p { margin: 0; }
+ul { margin: 0; padding: 0; list-style: none; }
+img, svg { max-width: 100%; height: auto; }
+
+a {
+  color: var(--c-acc);
+  text-decoration-color: color-mix(in srgb, var(--c-acc) 38%, transparent);
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: from-font;
+  transition: color 0.14s ease, text-decoration-color 0.14s ease;
+}
+a:hover { color: var(--c-acc-deep); text-decoration-color: currentColor; }
+
+/* Foco desenhado, não herdado: anel na cor do acento com folga de 3px, e um
+   segundo anel na cor do fundo para o foco sobreviver em cima do eixo.        */
+:focus-visible {
+  outline: 2px solid var(--c-acc);
+  outline-offset: 3px;
+  border-radius: 1px;
+  box-shadow: 0 0 0 5px var(--c-bg);
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: 0;
+  z-index: 10;
+  transform: translateY(-140%);
+  background: var(--c-ink);
+  color: var(--c-bg);
+  padding: 0.7rem 1.1rem;
+  font-size: var(--t--1);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: transform 0.16s ease;
+}
+.skip:focus-visible { transform: translateY(0); color: var(--c-bg); }
+
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* rótulo miúdo, recorrente: eyebrow, legenda do eixo, rótulo de domínio */
+.lbl {
+  font-size: var(--t--1);
+  text-transform: uppercase;
+  letter-spacing: 0.135em;
+  color: var(--c-mut);
+  font-weight: 500;
+}
+
+.tnum { font-variant-numeric: tabular-nums; }
+
+/* Destaque do acento na prosa (*assim* nos arquivos de conteúdo). Peso, não
+   cor sozinha: quem não distingue a cor ainda vê a ênfase. */
+.acc {
+  color: var(--c-acc);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

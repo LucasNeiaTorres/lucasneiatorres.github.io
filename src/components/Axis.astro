@@ -1,0 +1,566 @@
+---
+import { timeline, months } from "../data/timeline";
+import { repo } from "../data/site";
+import { mark } from "../data/emphasis";
+import type { Dict, Event } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+
+type Row = { kind: "gap"; m: number } | { kind: "ev"; ev: Event; year: string | null };
+
+/* Monta as linhas: entre dois eventos entra um vão, cuja ALTURA é o número de
+   meses decorridos. O ano só é impresso quando muda — repetir o ano em eventos
+   do mesmo ano transformaria a escala em enfeite. */
+const rows: Row[] = [];
+let printed = "";
+timeline.forEach((ev, i) => {
+  if (i > 0) {
+    const m = months(timeline[i - 1].date, ev.date);
+    if (m > 0) rows.push({ kind: "gap", m });
+  }
+  const year = ev.date.slice(0, 4);
+  rows.push({ kind: "ev", ev, year: year === printed ? null : year });
+  printed = year;
+});
+---
+
+<section id="percurso" class="ax" aria-labelledby="ax-h">
+  <div class="wrap ax__head">
+    <h2 id="ax-h" class="ax__h">{t.axis.heading}</h2>
+    <p class="ax__aside">{t.axis.aside}</p>
+    <ul class="ax__legend">
+      <li><span class="mark mark--work" aria-hidden="true"></span>{t.axis.legend.work}</li>
+      <li><span class="mark mark--project" aria-hidden="true"></span>{t.axis.legend.project}</li>
+      <li><span class="mark mark--edu" aria-hidden="true"></span>{t.axis.legend.edu}</li>
+    </ul>
+  </div>
+
+  <div class="wrap">
+    <div class="ax__body" id="ax-body" data-lang={t.htmlLang}>
+      <div class="marker" id="ax-marker" hidden aria-hidden="true">
+        <span class="marker__read tnum"></span><span class="marker__dot"></span>
+      </div>
+
+      <ol class="ax__list">
+        {
+          rows.map((row) =>
+            row.kind === "gap" ? (
+              <li class="gap" style={`--m:${row.m}`} aria-hidden="true">
+                <div class="gap__y" />
+                <div class="gap__ax" />
+                <div class="gap__b">
+                  {row.m >= 6 && <span class="gap__lbl">{t.axis.elapsed(row.m)}</span>}
+                </div>
+              </li>
+            ) : row.ev.featured ? (
+              <li class="ev ev--f" data-kind={row.ev.kind}>
+                <div class="ev__panel">
+                  <p class="ev__flag lbl">
+                    <span class="mark mark--project" aria-hidden="true" />
+                    {t.axis.featuredLabel}
+                    <span class="ev__flagyear tnum">{row.ev.date.slice(0, 4)}</span>
+                  </p>
+                  <h3 class="ev__t ev__t--f">
+                    <span class="sr">{t.axis.legend.project}: </span>
+                    {t.prose[row.ev.id].title}
+                  </h3>
+                  {t.prose[row.ev.id].role && (
+                    <p class="ev__role tnum">{t.prose[row.ev.id].role}</p>
+                  )}
+                  <div class="ev__cols">
+                    {t.prose[row.ev.id].body?.map((p) => <p class="ev__p" set:html={mark(p)} />)}
+                  </div>
+                  {t.prose[row.ev.id].stats && (
+                    <p class="ev__stats tnum">{t.prose[row.ev.id].stats}</p>
+                  )}
+                  <p class="ev__foot">
+                    {row.ev.tags && (
+                      <span class="ev__tags">{row.ev.tags.join(" · ")}</span>
+                    )}
+                    {row.ev.repo && (
+                      <a class="ev__repo" href={repo(row.ev.repo)} rel="noopener">
+                        {t.axis.repoLabel} <span aria-hidden="true">↗</span>
+                      </a>
+                    )}
+                  </p>
+                </div>
+              </li>
+            ) : (
+              <li class="ev" data-kind={row.ev.kind}>
+                <div class="ev__y">
+                  {row.year && <span class="ev__ynum tnum">{row.year}</span>}
+                </div>
+                <div class="ev__ax">
+                  <span class={`mark mark--${row.ev.kind}`} data-date={row.ev.date} aria-hidden="true" />
+                </div>
+                <div class="ev__b">
+                  <h3 class="ev__t">
+                    <span class="sr">{t.axis.legend[row.ev.kind]}: </span>
+                    {t.prose[row.ev.id].title}
+                  </h3>
+                  {t.prose[row.ev.id].role && (
+                    <p class="ev__role tnum">{t.prose[row.ev.id].role}</p>
+                  )}
+                  {t.prose[row.ev.id].body?.map((p) => <p class="ev__p" set:html={mark(p)} />)}
+                  {(row.ev.tags || row.ev.repo) && (
+                    <p class="ev__foot">
+                      {row.ev.tags && <span class="ev__tags">{row.ev.tags.join(" · ")}</span>}
+                      {row.ev.repo && (
+                        <a class="ev__repo" href={repo(row.ev.repo)} rel="noopener">
+                          {t.axis.repoLabel} <span aria-hidden="true">↗</span>
+                        </a>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </li>
+            )
+          )
+        }
+
+        <li class="ev ev--now">
+          <div class="ev__y" />
+          <div class="ev__ax"><span class="mark mark--now" aria-hidden="true"></span></div>
+          <div class="ev__b"><p class="lbl">{t.axis.now}</p></div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ax {
+    padding-block: 0 var(--s-5);
+  }
+  .ax__head {
+    padding-bottom: var(--s-5);
+  }
+  .ax__h {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: var(--t-2);
+    letter-spacing: 0.01em;
+    padding-left: calc(var(--axis-col) + var(--axis-gap));
+  }
+  .ax__aside {
+    color: var(--c-mut);
+    font-size: var(--t--1);
+    max-width: 31rem;
+    margin-top: var(--s-2);
+    padding-left: calc(var(--axis-col) + var(--axis-gap));
+    line-height: 1.5;
+  }
+  .ax__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
+    margin-top: var(--s-4);
+    padding-left: calc(var(--axis-col) + var(--axis-gap));
+    font-size: var(--t--1);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--c-mut);
+  }
+  .ax__legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .ax__legend .mark {
+    position: static;
+    transform: none;
+  }
+
+  /* --- marcas ------------------------------------------------------------
+     Três formas, porque há três naturezas de evento. Não é decoração: quem
+     varre a página caçando projeto encontra os anéis.                        */
+  .mark {
+    position: absolute;
+    left: 50%;
+    top: 0.72em;
+    transform: translateX(-50%);
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--c-acc);
+  }
+  .mark--project {
+    background: var(--c-bg);
+    border: 2px solid var(--c-acc);
+  }
+  .mark--edu {
+    width: 13px;
+    height: 0;
+    border-radius: 0;
+    border-top: 1px solid var(--c-mut);
+    background: none;
+  }
+  .mark--now {
+    width: 5px;
+    height: 5px;
+    background: var(--c-mut);
+  }
+
+  /* --- linhas ------------------------------------------------------------- */
+  .ax__body {
+    position: relative;
+  }
+  .ev,
+  .gap {
+    display: grid;
+    grid-template-columns: var(--axis-col) 1px minmax(0, 1fr);
+    column-gap: 0;
+  }
+  .ev__y,
+  .gap__y {
+    text-align: right;
+    padding-right: var(--axis-gap);
+  }
+  .ev__ynum {
+    transition: opacity 0.16s ease;
+    font-family: var(--f-display);
+    font-size: var(--t-3);
+    line-height: 0.9;
+    letter-spacing: -0.005em;
+    display: block;
+  }
+  .ev__ax,
+  .gap__ax {
+    background: var(--c-axis);
+    position: relative;
+  }
+  /* O vão é traço interrompido: ali não aconteceu nada, e a linha diz isso. */
+  .gap__ax {
+    background: repeating-linear-gradient(
+      to bottom,
+      var(--c-axis) 0 3px,
+      transparent 3px 9px
+    );
+  }
+  .ev__b,
+  .gap__b {
+    padding-left: var(--axis-gap);
+    padding-bottom: var(--s-4);
+    min-width: 0;
+  }
+  .gap {
+    height: clamp(var(--vao-min), calc(var(--m) * var(--mes)), var(--vao-max));
+  }
+  .gap__b {
+    padding-bottom: 0;
+    display: flex;
+    align-items: center;
+  }
+  .gap__lbl {
+    font-size: var(--t--1);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--c-mut);
+    opacity: 0.85;
+  }
+
+  .ev__t {
+    font-size: var(--t-1);
+    letter-spacing: -0.008em;
+    margin-bottom: 0.15rem;
+    max-width: 34ch;
+  }
+  .ev__role {
+    font-size: var(--t--1);
+    color: var(--c-mut);
+    margin-bottom: var(--s-2);
+    max-width: 58ch;
+    line-height: 1.5;
+  }
+  .ev__p {
+    max-width: var(--measure);
+  }
+  .ev__p + .ev__p {
+    margin-top: var(--s-2);
+  }
+  .ev__stats {
+    margin-top: var(--s-2);
+    font-size: var(--t--1);
+    color: var(--c-mut);
+    max-width: var(--measure);
+  }
+  .ev__foot {
+    margin-top: var(--s-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
+    align-items: baseline;
+    font-size: var(--t--1);
+  }
+  .ev__tags {
+    color: var(--c-mut);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  /* Hover fora do óbvio: o link do repositório não muda de cor nem sublinha —
+     ele ganha a mesma seta do eixo deslizando para fora, como um valor que sai
+     da série. É o único movimento de hover da página. */
+  .ev__repo {
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-acc) 35%, transparent);
+    padding-bottom: 2px;
+  }
+  .ev__repo span {
+    display: inline-block;
+    transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+  .ev__repo:hover {
+    border-bottom-color: currentColor;
+  }
+  .ev__repo:hover span,
+  .ev__repo:focus-visible span {
+    transform: translate(0.22em, -0.22em);
+  }
+
+  .ev--now .ev__b {
+    padding-bottom: 0;
+  }
+  .ev--now .ev__ax {
+    background: linear-gradient(to bottom, var(--c-axis) 0 0.95em, transparent 0.95em);
+  }
+
+  /* --- destaque: interrompe o eixo ---------------------------------------
+     O único bloco da página que rompe a contenção. O eixo não passa por trás
+     dele; ele para em cima e recomeça embaixo.                               */
+  .ev--f {
+    display: block;
+    margin-block: var(--s-2) var(--s-4);
+  }
+  .ev__panel {
+    container-type: inline-size;
+    background: var(--c-bg-sunk);
+    border-block: 1px solid var(--c-rule);
+    margin-inline: calc(-1 * var(--gutter));
+    padding: var(--s-4) var(--gutter) var(--s-4);
+  }
+  .ev__flag {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: var(--s-2);
+    color: var(--c-acc);
+  }
+  .ev__flag .mark {
+    position: static;
+    transform: none;
+    background: var(--c-bg-sunk);
+  }
+  .ev__flagyear {
+    color: var(--c-mut);
+    margin-left: auto;
+    font-family: var(--f-display);
+    font-size: var(--t-2);
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .ev__t--f {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: var(--t-3);
+    line-height: 1.04;
+    letter-spacing: -0.012em;
+    max-width: 22ch;
+    margin-bottom: var(--s-2);
+  }
+  /* Duas colunas apenas aqui, e só quando o contêiner comporta: é a mudança de
+     densidade que marca o destaque. */
+  .ev__cols {
+    margin-top: var(--s-3);
+  }
+  .ev__cols .ev__p + .ev__p {
+    margin-top: var(--s-2);
+  }
+  /* Duas colunas só quando o painel comporta, e por fluxo, não por grade: com
+     grade o terceiro parágrafo ficava sozinho e sobrava um vazio ao lado. */
+  @container (min-width: 46rem) {
+    .ev__cols {
+      columns: 2;
+      column-gap: var(--s-5);
+      orphans: 2;
+      widows: 2;
+    }
+    .ev--f .ev__p {
+      max-width: none;
+      break-inside: avoid-column;
+    }
+    .ev__cols .ev__p + .ev__p {
+      margin-top: 0;
+      padding-top: var(--s-2);
+    }
+  }
+  .ev--f .ev__p {
+    max-width: 48ch;
+  }
+  .ev--f .ev__role {
+    max-width: none;
+  }
+
+  /* --- marcador de leitura (a interação-assinatura) -----------------------
+     Desliza pelo eixo mostrando a data da posição em que você está lendo.
+     Interpola entre as posições REAIS dos pontos, não linearmente pelo
+     scroll — senão ele mostraria uma data que não bate com a entrada ao lado. */
+  .marker {
+    position: absolute;
+    left: var(--axis-col);
+    top: 0;
+    width: 1px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  .marker__dot {
+    position: absolute;
+    left: -5px;
+    top: -5px;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--c-bg);
+    border: 2px solid var(--c-acc);
+  }
+  .marker__read {
+    position: absolute;
+    right: calc(var(--axis-gap) + 4px);
+    transform: translateY(-50%);
+    white-space: nowrap;
+    font-size: var(--t--1);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--c-acc);
+    background: var(--c-bg);
+    padding: 0.1rem 0.25rem;
+  }
+
+  @media (max-width: 46rem) {
+    .ax__h,
+    .ax__aside,
+    .ax__legend {
+      padding-left: 0;
+    }
+    .marker__read {
+      display: none;
+    }
+    .ev__t--f {
+      max-width: 26ch;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marker {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const body = document.getElementById("ax-body");
+  const marker = document.getElementById("ax-marker");
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  if (body && marker && !reduce.matches) {
+    const read = marker.querySelector(".marker__read") as HTMLElement | null;
+    const lang = body.dataset.lang || "pt-BR";
+    /* Notação do próprio site: 08.2022, a mesma das linhas de cargo. Intl daria
+       "ago. de 2022" — longo, e estranho ao lado de "08.2024 → 07.2026". */
+    const fmt = (m: number) =>
+      `${String((m % 12) + 1).padStart(2, "0")}.${Math.floor(m / 12)}`;
+    void lang;
+
+    /* Cada ponto do eixo é um par (posição em pixels, mês absoluto). Entre dois
+       pontos interpolamos linearmente; nos pontos a leitura é exata. */
+    let anchors: { y: number; m: number }[] = [];
+    let years: { node: HTMLElement; y: number; h: number }[] = [];
+    /* Faixas em que o eixo é interrompido (o destaque). Sem eixo ali, não há
+       posição no tempo para ler — então o marcador some. */
+    let blanks: { top: number; bottom: number }[] = [];
+
+    const measure = () => {
+      const top = body.getBoundingClientRect().top + window.scrollY;
+      anchors = Array.from(body.querySelectorAll<HTMLElement>(".mark[data-date]")).map((el) => {
+        const [y, mo] = (el.dataset.date as string).split("-").map(Number);
+        return { y: el.getBoundingClientRect().top + window.scrollY - top, m: y * 12 + (mo - 1) };
+      });
+      years = Array.from(body.querySelectorAll<HTMLElement>(".ev__ynum")).map((node) => {
+        const r = node.getBoundingClientRect();
+        return { node, y: r.top + r.height / 2 + window.scrollY - top, h: r.height };
+      });
+      blanks = Array.from(body.querySelectorAll<HTMLElement>(".ev--f")).map((node) => {
+        const r = node.getBoundingClientRect();
+        const t = r.top + window.scrollY - top;
+        return { top: t, bottom: t + r.height };
+      });
+    };
+
+    const monthAt = (y: number): number => {
+      if (anchors.length === 0) return 0;
+      if (y <= anchors[0].y) return anchors[0].m;
+      const last = anchors[anchors.length - 1];
+      if (y >= last.y) return last.m;
+      for (let i = 1; i < anchors.length; i++) {
+        const a = anchors[i - 1];
+        const b = anchors[i];
+        if (y <= b.y) {
+          const span = b.y - a.y;
+          const k = span === 0 ? 0 : (y - a.y) / span;
+          return a.m + k * (b.m - a.m);
+        }
+      }
+      return last.m;
+    };
+
+    let ticking = false;
+    const draw = () => {
+      ticking = false;
+      const r = body.getBoundingClientRect();
+      const line = window.innerHeight * 0.42;
+      const into = line - r.top;
+      const blank = blanks.some((b) => into >= b.top && into <= b.bottom);
+      if (r.bottom < line || r.top > line || blank) {
+        if (!marker.hidden) {
+          marker.hidden = true;
+          for (const el of years) el.node.style.opacity = "1";
+        }
+        return;
+      }
+      marker.hidden = false;
+      const y = Math.max(0, Math.min(r.height, line - r.top));
+      marker.style.top = `${y}px`;
+      const m = Math.round(monthAt(y));
+      if (read) read.textContent = fmt(m);
+
+      /* O marcador substitui, por um instante, o rótulo de ano que ele cobre:
+         duas leituras da mesma escala no mesmo lugar competiriam. */
+      for (const el of years) {
+        const near = Math.abs(el.y - y) < el.h * 0.75;
+        el.node.style.opacity = near ? "0" : "1";
+      }
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(draw);
+      }
+    };
+
+    const boot = () => {
+      measure();
+      draw();
+    };
+    boot();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", boot);
+    if (document.fonts) document.fonts.ready.then(boot);
+  }
+</script>

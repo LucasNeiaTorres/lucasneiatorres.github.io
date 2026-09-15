@@ -1,0 +1,85 @@
+---
+import { repo } from "../data/site";
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+---
+
+<section class="more" aria-label={t.axis.more.lead}>
+  <div class="wrap more__grid">
+    <p class="more__lead">{t.axis.more.lead}</p>
+    <ul class="more__list">
+      {
+        t.axis.more.items.map((it) => (
+          <li>
+            <a href={repo(it.repo)} rel="noopener">
+              {it.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="more__tail">{t.axis.more.tail}</p>
+  </div>
+</section>
+
+<style>
+  /* Bloco de respiro entre o eixo e a stack: os repositórios que provam base,
+     mas que não disputam a atenção de quem tem noventa segundos. Texto, não
+     cartão — eles não são a mesma coisa que os projetos do eixo. */
+  .more {
+    padding-block: 0 var(--s-5);
+  }
+  .more__grid {
+    display: grid;
+    grid-template-columns: var(--axis-col) minmax(0, 1fr);
+    column-gap: var(--axis-gap);
+    row-gap: var(--s-2);
+  }
+  .more__lead {
+    grid-column: 2;
+    max-width: 58ch;
+    color: var(--c-mut);
+    font-size: var(--t--1);
+    line-height: 1.55;
+  }
+  .more__list {
+    grid-column: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0;
+    max-width: 62ch;
+    font-size: var(--t--1);
+  }
+  .more__list li:not(:last-child)::after {
+    content: "·";
+    color: var(--c-axis);
+    padding-inline: 0.7rem;
+  }
+  .more__list a {
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-acc) 28%, transparent);
+  }
+  .more__list a:hover {
+    border-bottom-color: currentColor;
+  }
+  .more__tail {
+    grid-column: 2;
+    color: var(--c-mut);
+    font-size: var(--t--1);
+  }
+
+  @media (max-width: 46rem) {
+    .more__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .more__lead,
+    .more__list,
+    .more__tail {
+      grid-column: 1;
+    }
+  }
+</style>

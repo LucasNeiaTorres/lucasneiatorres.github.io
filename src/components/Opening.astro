@@ -1,0 +1,87 @@
+---
+import { mark } from "../data/emphasis";
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+---
+
+<section class="open" aria-labelledby="open-h">
+  <div class="wrap open__grid">
+    <p class="lbl open__eyebrow">{t.opening.eyebrow}</p>
+    <div class="open__col">
+      <h1 id="open-h" class="open__h">{t.opening.headline}</h1>
+      <p class="open__lead" set:html={mark(t.opening.body[0])} />
+      {t.opening.body.slice(1).map((p) => <p class="open__p" set:html={mark(p)} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .open {
+    padding-block: var(--s-5) var(--s-6);
+  }
+  /* Mesma grade do eixo, com a coluna do eixo vazia: a abertura não está no
+     tempo, mas o texto dela nasce exatamente na coluna em que os eventos vão
+     nascer. O alinhamento é o que costura as duas seções. */
+  .open__grid {
+    display: grid;
+    grid-template-columns: var(--axis-col) 1px minmax(0, 1fr);
+    column-gap: var(--axis-gap);
+  }
+  .open__eyebrow {
+    grid-column: 1 / 2;
+    text-align: right;
+    padding-top: 0.65em;
+    line-height: 1.7;
+    text-wrap: balance;
+  }
+  .open__col {
+    grid-column: 3 / 4;
+  }
+  .open__h {
+    font-family: var(--f-display);
+    font-weight: 400;
+    font-size: var(--t-4);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.017em;
+    max-width: 17ch;
+    margin-bottom: var(--s-4);
+  }
+  .open__lead {
+    font-size: var(--t-1);
+    line-height: 1.55;
+    max-width: var(--measure);
+    margin-bottom: var(--s-2);
+  }
+  .open__p {
+    max-width: var(--measure);
+    color: var(--c-mut);
+  }
+  .open__p + .open__p {
+    margin-top: var(--s-2);
+  }
+
+  @media (max-width: 46rem) {
+    .open {
+      padding-block: var(--s-5) var(--s-4);
+    }
+    .open__grid {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--s-2);
+    }
+    .open__eyebrow {
+      grid-column: 1 / -1;
+      text-align: left;
+      padding-top: 0;
+    }
+    .open__col {
+      grid-column: 1 / -1;
+    }
+    .open__h {
+      max-width: 20ch;
+    }
+  }
+</style>

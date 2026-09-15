@@ -1,0 +1,115 @@
+---
+import { site } from "../data/site";
+import type { Dict } from "../data/types";
+
+interface Props {
+  t: Dict;
+}
+const { t } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<section id="contato" class="ct" aria-labelledby="ct-h">
+  <div class="wrap">
+    <div class="ct__grid">
+      <h2 id="ct-h" class="lbl ct__lbl">{t.contact.heading}</h2>
+      <div class="ct__col">
+        <p class="ct__lead">{t.contact.lead}</p>
+        <a class="ct__mail" href={`mailto:${site.email}`}>{site.email}</a>
+        <ul class="ct__links">
+          <li><a href={site.linkedin} rel="noopener">LinkedIn</a></li>
+          <li><a href={site.github} rel="noopener">GitHub</a></li>
+          <li>
+            <a href={site.cv} download>
+              {t.contact.cv}
+            </a>{t.contact.cvNote && <span class="ct__note"> — {t.contact.cvNote}</span>}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <p class="ct__foot">
+      <span>{site.name} · {site.locality}, {site.region} · {year}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .ct {
+    border-top: 1px solid var(--c-rule);
+    padding-block: var(--s-5) var(--s-4);
+  }
+  .ct__grid {
+    display: grid;
+    grid-template-columns: var(--axis-col) minmax(0, 1fr);
+    column-gap: var(--axis-gap);
+  }
+  .ct__lbl {
+    text-align: right;
+    padding-top: 0.6em;
+    font-weight: 600;
+  }
+  .ct__lead {
+    max-width: 48ch;
+    color: var(--c-mut);
+    margin-bottom: var(--s-3);
+  }
+  /* O e-mail fecha a página no mesmo tipo com que ela abriu: é a única outra
+     vez que a serifa de display aparece em corpo grande. */
+  .ct__mail {
+    font-family: var(--f-display);
+    font-size: var(--t-3);
+    line-height: 1.05;
+    letter-spacing: -0.012em;
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-acc) 30%, transparent);
+    display: inline-block;
+    word-break: break-word;
+  }
+  .ct__mail:hover {
+    border-bottom-color: currentColor;
+  }
+  .ct__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-1) var(--s-3);
+    margin-top: var(--s-3);
+    font-size: var(--t--1);
+    text-transform: uppercase;
+    letter-spacing: 0.11em;
+  }
+  .ct__links a {
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--c-acc) 35%, transparent);
+    padding-bottom: 2px;
+    font-weight: 500;
+  }
+  .ct__links a:hover {
+    border-bottom-color: currentColor;
+  }
+  .ct__note {
+    color: var(--c-mut);
+    text-transform: none;
+    letter-spacing: 0.02em;
+  }
+  .ct__foot {
+    margin-top: var(--s-5);
+    padding-left: calc(var(--axis-col) + var(--axis-gap));
+    font-size: var(--t--1);
+    color: var(--c-mut);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 46rem) {
+    .ct__grid {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: var(--s-2);
+    }
+    .ct__lbl {
+      text-align: left;
+      padding-top: 0;
+    }
+    .ct__foot {
+      padding-left: 0;
+    }
+  }
+</style>
