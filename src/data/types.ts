@@ -33,7 +33,8 @@ export interface Dict {
   htmlLang: string;
   meta: { title: string; description: string };
   nav: { path: string; stack: string; contact: string; skip: string };
-  opening: { eyebrow: string; headline: string; body: string[] };
+  /** O H1 é o nome (site.name). `role` é a linha de cargo logo abaixo dele. */
+  opening: { eyebrow: string; role: string; body: string[] };
   axis: {
     heading: string;
     legend: { work: string; project: string; edu: string };

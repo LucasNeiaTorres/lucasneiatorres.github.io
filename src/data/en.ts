@@ -10,8 +10,8 @@ export const en: Dict = {
   nav: { path: "Timeline", stack: "Stack", contact: "Contact", skip: "Skip to content" },
 
   opening: {
-    eyebrow: "Back-end developer · Curitiba, Brazil",
-    headline: "I take in machine data that arrives, goes missing, or arrives wrong.",
+    eyebrow: "Curitiba, Brazil",
+    role: "Back-end developer · Java and Python",
     body: [
       "At FiscalTech I work on telemetry and traffic enforcement: roughly 1,700 devices in the field sending data around the clock, and a server that has to receive all of it. Java with Spring and Python with FastAPI, over PostgreSQL and Oracle.",
       "The problem that taught me the most was exactly that one — vehicle data getting lost between the embedded systems and the server, a 20% failure rate on delivery. I traced the bottleneck in the integration path, rewrote the communication routine, and the rate went to *0%*.",

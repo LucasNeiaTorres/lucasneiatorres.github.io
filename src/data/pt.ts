@@ -10,8 +10,8 @@ export const pt: Dict = {
   nav: { path: "Percurso", stack: "Stack", contact: "Contato", skip: "Ir para o conteúdo" },
 
   opening: {
-    eyebrow: "Desenvolvedor back-end · Curitiba, BR",
-    headline: "Recebo dado de máquina que chega, falta, ou chega errado.",
+    eyebrow: "Curitiba, BR",
+    role: "Desenvolvedor back-end · Java e Python",
     body: [
       "Na FiscalTech trabalho com telemetria e fiscalização de trânsito: cerca de 1.700 equipamentos em campo mandando dado 24 horas por dia, e um servidor que precisa receber tudo. Java com Spring e Python com FastAPI, sobre PostgreSQL e Oracle.",
       "O problema que mais me ensinou foi esse — dado de veículo se perdendo entre o sistema embarcado e o servidor, 20% de falha no envio. Diagnostiquei o gargalo no fluxo de integração, reescrevi a rotina de comunicação, e a taxa foi para *0%*.",

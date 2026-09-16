@@ -1,5 +1,4 @@
 ---
-import { site } from "../data/site";
 import type { Dict } from "../data/types";
 
 interface Props {
@@ -10,7 +9,6 @@ const { t } = Astro.props;
 
 <header class="mast">
   <div class="wrap mast__in">
-    <p class="mast__name">{site.name}</p>
     <nav class="mast__nav" aria-label={t.axis.heading}>
       <a href="#percurso">{t.nav.path}</a>
       <a href="#stack">{t.nav.stack}</a>
@@ -33,16 +31,10 @@ const { t } = Astro.props;
     gap: var(--s-2) var(--s-3);
     padding-block: var(--s-2);
   }
-  .mast__name {
-    font-size: var(--t--1);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    font-weight: 600;
-    margin-right: auto;
-  }
   .mast__nav {
     display: flex;
     gap: var(--s-3);
+    margin-right: auto;
   }
   .mast__nav a,
   .mast__lang {
@@ -66,11 +58,5 @@ const { t } = Astro.props;
   }
   .mast__lang:hover {
     color: var(--c-acc-deep);
-  }
-
-  @media (max-width: 30rem) {
-    .mast__name {
-      flex-basis: 100%;
-    }
   }
 </style>
