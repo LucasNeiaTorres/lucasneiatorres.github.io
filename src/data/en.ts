@@ -127,6 +127,18 @@ export const en: Dict = {
         "One vertical slice is finished end to end; the remaining screens are scaffolded against a data model that already covers them.",
       ],
     },
+
+    "kafka-weighing": {
+      title: "Vehicle weighing on Kafka",
+      role: "Spring Boot 4 and Kafka 4 in KRaft · a panel that inspects the cluster · Testcontainers",
+      body: [
+        "A truck crosses the weighbridge and the same fact matters to more than one system: one has to store the weighing, another has to raise an alert when it exceeds the legal limit. Solved with direct calls, every new consumer becomes one more integration inside the producer — and when a destination is down, whoever published is left holding the problem.",
+        "The decision that shaped the project was to treat FAILURE as the main subject rather than a footnote. The offset is committed after processing, never before, because confirming what was merely delivered turns any crash into data loss; the duplicate this creates is discarded at the destination by event id, which is what makes Kafka\u2019s at-least-once delivery actually usable. A record that keeps failing goes to a dead letter topic with exponential backoff — without it, a single bad message blocks the whole partition and the symptom never points at the cause.",
+        "The panel mirrors nothing in memory: it reads topics, partitions, ISR, offsets and each group\u2019s lag straight from Kafka\u2019s admin API, and reads messages with assign and seek, without joining a consumer group or committing offsets. One button publishes a deliberately invalid payload — the shortest way to watch the path into the dead letter topic, and the lag drop back to zero instead of stalling.",
+      ],
+      stats:
+        "1,231 lines in src/main/java · 24 tests, 4 of them against a real Kafka in a container · 3 topics, 3 partitions, 2 consumer groups · three-stage CI, the last one booting the stack and requiring a healthcheck",
+    },
   },
 
   stack: {

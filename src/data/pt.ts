@@ -127,6 +127,18 @@ export const pt: Dict = {
         "Uma fatia vertical está completa ponta a ponta; as demais telas estão esboçadas sobre um modelo de dados que já as cobre.",
       ],
     },
+
+    "kafka-weighing": {
+      title: "Pesagem de veículos sobre Kafka",
+      role: "Spring Boot 4 e Kafka 4 em KRaft · painel que inspeciona o cluster · Testcontainers",
+      body: [
+        "Um caminhão passa pela balança e o mesmo fato interessa a mais de um sistema: um precisa armazenar a pesagem, outro precisa alertar quando ela excede o limite legal. Resolvido por chamadas diretas, cada novo interessado vira mais uma integração no produtor — e quando um dos destinos está fora do ar, é quem publicou que fica com o problema no colo.",
+        "A decisão que moldou o projeto foi tratar o que acontece na FALHA como o assunto principal, não como detalhe. O commit do offset vem depois do processamento, nunca antes, porque confirmar o que foi apenas entregue transforma qualquer queda em perda; a duplicata que isso gera é descartada no destino por identificador de evento, que é o que converte a entrega \u201cao menos uma vez\u201d do Kafka em algo utilizável. Mensagem que falha repetidamente vai para uma dead letter topic com espera crescente — sem ela, um único registro defeituoso trava a partição inteira e o sintoma não aponta para a causa.",
+        "O painel não espelha nada em memória: lê tópicos, partições, ISR, offsets e o atraso de cada grupo pela API administrativa do próprio Kafka, e as mensagens com assign e seek, sem entrar em grupo nem comitar offset. Há um botão que publica um payload inválido de propósito — é a forma mais curta de ver o caminho até a dead letter topic e o atraso voltar a zero em vez de travar.",
+      ],
+      stats:
+        "1.231 linhas em src/main/java · 24 testes, 4 deles contra um Kafka real em contêiner · 3 tópicos, 3 partições, 2 grupos de consumo · CI em três estágios, o último subindo a pilha e exigindo healthcheck",
+    },
   },
 
   stack: {

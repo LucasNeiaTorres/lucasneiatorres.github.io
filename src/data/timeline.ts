@@ -41,6 +41,13 @@ export const timeline: Event[] = [
     repo: "sistema-prestacao-contas",
     tags: ["Python", "FastAPI", "SQLAlchemy", "Oracle", "Angular", "Docker"],
   },
+  {
+    id: "kafka-weighing",
+    kind: "project",
+    date: "2026-09",
+    repo: "kafka-vehicle-weighing",
+    tags: ["Java 17", "Spring Boot 4", "Apache Kafka", "Testcontainers", "Docker"],
+  },
 ];
 
 /** Meses decorridos entre dois carimbos AAAA-MM. */
